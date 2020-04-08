@@ -1,0 +1,22 @@
+{
+    "name": "seadrip/common",
+    "description": "some common methods and classes",
+    "type": "library",
+    "license": "Apache Licence 2.0",
+    "authors": [
+        {
+            "name": "SeaDrip::Poplar",
+            "email": "741027037@qq.com",
+            "role": "Developer",
+            "homepage": "https://github.com/SDPoplar"
+        }
+    ],
+    "require": {
+    },
+    "autoload": {
+        "psr-4": {
+            "SeaDrip\\": "./"
+        }
+    }
+}
+
