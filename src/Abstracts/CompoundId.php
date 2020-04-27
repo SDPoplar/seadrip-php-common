@@ -5,6 +5,12 @@ abstract class CompoundId
 {
     abstract protected function parse_origin( string $orgin );
 
+    /*
+    public static function create( string $group, int $id_val ) : CompoundId {
+        
+    }
+    */
+
     public final function __construct( string $id ) {
         $this->_origin = $id;
         $this->parse_origin( $this->_origin );
