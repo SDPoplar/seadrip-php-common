@@ -8,6 +8,10 @@ abstract class Component
         return $this;
     }
 
+    public function get_parent() {
+        return $this->_parent();
+    }
+
     private $_parent;
 }
 

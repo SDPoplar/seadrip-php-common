@@ -7,13 +7,13 @@ trait FormatToArray
 {
     abstract protected function get_format_rule() : array;
 
-    public final function format( Rule $rule ) : array {
+    public final function format( Rule $rule, array $merge = [] ) : array {
         $alias = $rule->get_alias_map();
         $ret = [];
         foreach( $this->pick_formats( $rule ) as $key => $method ) {
             $ret[ array_key_exists( $key, $alias ) ? $key : $alias[ $key ] ] = $method( $this );
         }
-        return $ret;
+        return array_merge( $ret, $merge );
     }
 
     private final function pick_formats( Rule $rule ) : array {
