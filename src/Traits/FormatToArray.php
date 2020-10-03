@@ -11,7 +11,7 @@ trait FormatToArray
         $alias = $rule->get_alias_map();
         $ret = [];
         foreach( $this->pick_formats( $rule ) as $key => $method ) {
-            $ret[ array_key_exists( $key, $alias ) ? $key : $alias[ $key ] ] = $method( $this );
+            $ret[ array_key_exists( $key, $alias ) ? $alias[ $key ] : $key ] = $method( $this );
         }
         return array_merge( $ret, $merge );
     }
