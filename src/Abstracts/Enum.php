@@ -3,7 +3,7 @@ namespace SeaDrip\Abstracts;
 
 abstract class Enum
 {
-    public final static function Has( $val ) : bool {
+    public final static function Has( int|string $val ) : bool {
         return in_array( $val, self::Values() );
     }
 
@@ -11,8 +11,8 @@ abstract class Enum
         return array_diff( array_values( self::_Constants() ), $except );
     }
 
-    private final static function _Constants() : array {
-        return ( new ReflectionClass( static::class ) )->getConstants();
+    protected final static function _Constants() : array {
+        return ( new \ReflectionClass( static::class ) )->getConstants();
     }
 }
 
