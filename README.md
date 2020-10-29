@@ -2,5 +2,5 @@
 some common methods and classes made with PHP
 
 ## PHP version
->= 8.0
+php >= 8.0
 
