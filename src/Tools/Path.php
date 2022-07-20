@@ -1,21 +1,42 @@
 <?php
 namespace SeaDrip\Tools;
 
-class Path
+class Path implements \Stringable
 {
-    public static function mix( string ...$parts ) : string {
-        $ret = '';
-        foreach( $parts as $part ) {
-            $ret .= $part;
-            if( !empty( $ret ) && !self::is_end_with_ps( $ret ) ) {
-                $ret .= DIRECTORY_SEPARATOR;
-            }
-        }
-        return $ret;
+    public function __construct(string ...$parts)
+    {
+        $cleared_parts = array_filter(array_map(
+            fn(string $part) => rtrim($part, DIRECTORY_SEPARATOR),
+            $parts
+        ));
+        $this->path = implode(DIRECTORY_SEPARATOR, $cleared_parts);
     }
 
-    public static function is_end_with_ps( string $path ) : bool {
-        return $path[ strlen( $path ) - 1 ] == DIRECTORY_SEPARATOR;
+    public function exists(): bool
+    {
+        return file_exists($this->path);
     }
+
+    public function isWritable(): bool
+    {
+        return is_writable($this->path);
+    }
+
+    public function isReadable(): bool
+    {
+        return is_readable($this->path);
+    }
+
+    public function __toString(): string
+    {
+        return $this->path;
+    }
+
+    public function create(): string
+    {
+        return mkdir($this->path, 0755, true);
+    }
+
+    public readonly string $path;
 }
 
