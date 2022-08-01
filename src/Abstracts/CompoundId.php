@@ -3,7 +3,7 @@ namespace SeaDrip\Abstracts;
 
 abstract class CompoundId
 {
-    abstract protected function parse_origin( string $orgin );
+    abstract protected function parseOrigin(string $orgin);
 
     /*
     public static function create( string $group, int $id_val ) : CompoundId {
@@ -11,34 +11,40 @@ abstract class CompoundId
     }
     */
 
-    public final function __construct( string $id ) {
+    public final function __construct(string $id)
+    {
         $this->_origin = $id;
-        $this->parse_origin( $this->_origin );
+        $this->parseOrigin($this->_origin);
     }
 
-    public final function get_origin() : string {
-        return $this->_origin;
+    public final function getOrigin(): string
+    {
+        return $this->origin;
     }
 
-    public final function get_group() : string {
-        return $this->_group;
+    public final function get_group(): string
+    {
+        return $this->group;
     }
 
-    public final function get_id_val() : int {
-        return $this->_id_val;
+    public final function getIDVal(): int
+    {
+        return $this->id_val;
     }
 
-    public final function __toString() : string {
-        return $this->get_origin();
+    public final function __toString(): string
+    {
+        return $this->getOrigin();
     }
 
-    protected final function init( string $group, int $id_val ) {
-        $this->_id_val = $id_val;
-        $this->_group = $group;
+    protected final function init(string $group, int $id_val): void
+    {
+        $this->id_val = $id_val;
+        $this->group = $group;
     }
 
-    private $_origin;
-    private $_group;
-    private $_id_val;
+    private $origin;
+    private $group;
+    private $id_val;
 }
 

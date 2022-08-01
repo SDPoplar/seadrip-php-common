@@ -3,15 +3,17 @@ namespace SeaDrip\Abstracts;
 
 abstract class Component
 {
-    public function &bind_parent( $parent ) {
+    public function &bindParent($parent): static
+    {
         $this->_parent =& $parent;
         return $this;
     }
 
-    public function get_parent() {
-        return $this->_parent();
+    public function getParent()
+    {
+        return $this->parent;
     }
 
-    private $_parent;
+    private $parent;
 }
 

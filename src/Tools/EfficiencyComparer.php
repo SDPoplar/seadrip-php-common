@@ -1,5 +1,5 @@
 <?php
-namespace Mxs\Tools;
+namespace SeaDrip\Tools;
 
 class EfficiencyComparer
 {
