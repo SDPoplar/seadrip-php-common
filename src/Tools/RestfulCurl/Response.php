@@ -11,25 +11,15 @@ class Response
 
     public function isSuccess() : bool
     {
-        return $this->getStatus() === 200;
+        return in_array($this->status, [200, 204]);
     }
-
-    public function getStatus() : int
-    {
-        return $this->status;
-    }
-
-    public function getContent() : string
-    {
-        return $this->content;
-    }
-
+    
     public function parseContent(callable $parser)
     {
-        return $parser($this->getContent());
+        return $parser($this->content);
     }
 
-    protected int $status;
-    protected string $content;
+    public readonly int $status;
+    public readonly string $content;
 }
 
