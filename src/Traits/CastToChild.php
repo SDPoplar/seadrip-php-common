@@ -26,7 +26,7 @@ trait CastToChild
         $propLimit = RP::IS_PUBLIC | RP::IS_PROTECTED | RP::IS_PRIVATE;
         foreach ((new \ReflectionClass( self::class ))->getProperties( $propLimit ) as $prop) {
         */
-        foreach (array_keys( get_object_vars( $this ) ?: [] ) as $prop) {
+        foreach (array_keys(get_object_vars($this) ?: []) as $prop) {
             $child->$prop = $this->$prop;
         }
         if ($child->afterBeenCasted() === false) {  //  true or null both means success
