@@ -32,6 +32,11 @@ class Path implements \Stringable
         return $this->path;
     }
 
+    public function merge(string|self ...$parts): self
+    {
+        return new self(...[$this, ...$parts]);
+    }
+
     public function create(): string
     {
         return mkdir($this->path, 0755, true);
