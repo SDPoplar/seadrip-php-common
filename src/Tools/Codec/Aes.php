@@ -21,4 +21,3 @@ class Aes
         return openssl_decrypt($data, $with_method, $this->key, 0, $this->iv);
     }
 }
-

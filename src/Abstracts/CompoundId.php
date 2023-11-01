@@ -13,13 +13,8 @@ abstract class CompoundId
 
     public final function __construct(string $id)
     {
-        $this->_origin = $id;
-        $this->parseOrigin($this->_origin);
-    }
-
-    public final function getOrigin(): string
-    {
-        return $this->origin;
+        $this->origin = $id;
+        $this->parseOrigin($this->origin);
     }
 
     public final function get_group(): string
@@ -34,7 +29,7 @@ abstract class CompoundId
 
     public final function __toString(): string
     {
-        return $this->getOrigin();
+        return $this->origin;
     }
 
     protected final function init(string $group, int $id_val): void
@@ -43,7 +38,7 @@ abstract class CompoundId
         $this->group = $group;
     }
 
-    private $origin;
+    public readonly string $origin;
     private $group;
     private $id_val;
 }

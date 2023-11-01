@@ -1,7 +1,7 @@
 <?php
-namespace SeaDrip\Enums;
+namespace SeaDrip\Http;
 
-enum HttpMethods: string
+enum Method: string
 {
     //  http - 1.0
     case Get = 'GET';

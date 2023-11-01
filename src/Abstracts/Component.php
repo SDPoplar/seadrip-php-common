@@ -5,7 +5,7 @@ abstract class Component
 {
     public function &bindParent($parent): static
     {
-        $this->_parent =& $parent;
+        $this->parent =& $parent;
         return $this;
     }
 

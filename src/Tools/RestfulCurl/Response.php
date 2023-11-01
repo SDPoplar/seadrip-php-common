@@ -13,4 +13,3 @@ class Response
         return in_array($this->status, [200, 204]);
     }
 }
-
