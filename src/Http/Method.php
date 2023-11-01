@@ -1,18 +1,18 @@
 <?php
 namespace SeaDrip\Http;
 
+/**
+ * Method Definitions (RFC7231 - section 4.3)
+ * @see https://datatracker.ietf.org/doc/html/rfc7231#section-4.3
+ */
 enum Method: string
 {
-    //  http - 1.0
-    case Get = 'GET';
-    case Post = 'POST';
-    case Head = 'HEAD';
-
-    //  http - 1.1
-    case Options = 'OPTIONS';
-    case Put = 'PUT';
-    case Patch = 'PATCH';
-    case Delete = 'DELETE';
-    case Trace = 'TRACE';
-    case Connect = 'CONNECT';
+    case GET        = 'GET';
+    case HEAD       = 'HEAD';
+    case POST       = 'POST';
+    case PUT        = 'PUT';
+    case DELETE     = 'DELETE';
+    case CONNECT    = 'CONNECT';
+    case OPTIONS    = 'OPTIONS';
+    case TRACE      = 'TRACE';
 }
