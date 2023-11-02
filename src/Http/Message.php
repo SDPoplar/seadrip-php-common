@@ -93,13 +93,12 @@ class Message implements MessageInterface
             ->initHeaders(...$this->headers);
     }
 
-    protected static function fork(self $from, string $target_class): static
+    protected function &initMessage(self $from): static
     {
-        $ins = (fn(): self => new $target_class())();
-        return $ins
+        return $this
             ->initProtocolVersion($from->protocol_version)
-            ->initBody($from->body)
-            ->initHeaders(...$from->headers);
+            ->initHeaders(...$from->headers)
+            ->initBody($from->body);
     }
 
     protected function &initProtocolVersion(string $version): static

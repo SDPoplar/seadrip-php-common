@@ -14,14 +14,20 @@ class Request extends Message implements \Psr\Http\Message\RequestInterface
     {
         $checked_method = Method::tryFrom($method);
         $checked_method or throw new \InvalidArgumentException('unknown http method '.$method);
-        $ret = clone $this;
-        $ret->method = $checked_method;
-        return $ret;
+        return (new static())
+            ->initMessage($this)
+            ->initMethod($checked_method->value)
+            ->initRequestTarget($this->request_target)
+            ->initURI($this->uri);
     }
 
     public function withRequestTarget(string $requestTarget): RequestInterface
     {
-        return $this->cast()->initRequestTarget($requestTarget)->initMethod($this->method);
+        return (new static())
+            ->initMessage($this)
+            ->initRequestTarget($requestTarget)
+            ->initMethod($this->method)
+            ->initURI($this->uri);
     }
 
     public function getRequestTarget(): string
@@ -31,8 +37,6 @@ class Request extends Message implements \Psr\Http\Message\RequestInterface
 
     public function withUri(UriInterface $uri, bool $preserveHost = false): RequestInterface
     {
-        $ret = clone $this;
-        $ret->uri = $uri;
         // TODO: $preserveHost actions
         /**
          * 当传入的 URI 包含有 HOST 信息时，此方法 **必须** 更新 HOST 信息。如果 URI 
@@ -51,12 +55,24 @@ class Request extends Message implements \Psr\Http\Message\RequestInterface
          * 一个新的修改过的 HTTP 请求实例。
          */
 
-        return $ret;
+        return (new static())
+            ->initMessage($this)
+            ->initMethod($this->method)
+            ->initRequestTarget($this->request_target)
+            ->initURI($uri);
     }
 
     public function getUri(): UriInterface
     {
         return $this->uri;
+    }
+
+    protected function &initRequest(self $from): static
+    {
+        return $this->initMessage($this)
+            ->initMethod($from->method)
+            ->initURI($from->uri)
+            ->initRequestTarget($from->request_target);
     }
 
     protected function &initMethod(string $method): static

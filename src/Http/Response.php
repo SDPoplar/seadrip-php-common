@@ -7,7 +7,7 @@ class Response extends Message implements \Psr\Http\Message\ResponseInterface
 {
     public function withStatus(int $code, string $reasonPhrase = ''): ResponseInterface
     {
-        return parent::fork($this, static::class)->initStatusCode($code)->initReasonPhrase($reasonPhrase);
+        return (new static())->initMessage($this)->initStatusCode($code)->initReasonPhrase($reasonPhrase);
     }
 
     public function getStatusCode(): int
@@ -20,11 +20,11 @@ class Response extends Message implements \Psr\Http\Message\ResponseInterface
         return $this->reason_phrase;
     }
 
- // protected static function fork(self $from, string $target_class): static
-    protected static function fork(self $from, string $target_class): static
+    protected function &initResponse(Response $from): static
     {
-        $ins = (fn(): self => parent::fork($this, $target_class))();
-        return $ins->initStatusCode($from->status_code)->initReasonPhrase($from->reason_phrase);
+        return $this->initMessage($from)
+            ->initStatusCode($from->status_code)
+            ->initReasonPhrase($from->reason_phrase);
     }
 
     protected function &initStatusCode(int $code): static
