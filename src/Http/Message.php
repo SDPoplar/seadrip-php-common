@@ -5,6 +5,13 @@ use Psr\Http\Message\{MessageInterface, StreamInterface};
 
 class Message implements MessageInterface
 {
+    public function __construct(string $protocolVersion, StreamInterface $body, array $headers)
+    {
+        $this->protocol_version = $protocolVersion;
+        $this->body = $body;
+        $this->headers = $headers;
+    }
+
     public function getProtocolVersion(): string
     {
         return $this->protocol_version;
@@ -12,10 +19,9 @@ class Message implements MessageInterface
 
     public function withProtocolVersion(string $version): MessageInterface
     {
-        return (new static())
-            ->initProtocolVersion($version)
-            ->initBody($this->body)
-            ->initHeaders(...$this->headers);
+        $ret = clone $this;
+        $ret->protocol_version = $version;
+        return $ret;
     }
 
     public function hasHeader(string $name): bool
@@ -26,58 +32,39 @@ class Message implements MessageInterface
     public function getHeaderLine(string $name): string
     {
         $line = $this->headers[strtolower($name)] ?? null;
-        return $line ? ''.$line : '';
+        return $line ? implode(', ', $line) : '';
     }
 
     public function getHeader(string $name): array
     {
-        $line = (fn($ins): ?HeaderItem => $ins)($this->headers[strtolower($name)] ?? null);
-        return $line ? $line->values : [];
+        return $this->headers[strtolower($name)] ?? [];
     }
 
     public function getHeaders(): array
     {
-        $ret = [];
-        foreach ($this->headers as $line) {
-            $l = (fn($ins): Headers\Line => $ins)($line);
-            $ret[$l->field] = $l->toArray();
-        }
-        return $ret;
+        return $this->headers;
     }
 
     public function withAddedHeader(string $name, $value): MessageInterface
     {
         $ci_name = strtolower($name);
-        $h = $this->headers;
-        $val_arr = is_string($value) ? [$value] : $value;
-        $target_item = (fn($ins): HeaderItem => $ins ?: new HeaderItem($name))($h[$ci_name] ?? null);
-        $h[$ci_name] = $target_item->merge(...$val_arr);
-        return (new static())
-            ->initProtocolVersion($this->protocol_version)
-            ->initBody($this->body)
-            ->initHeaders(...$h);
+        $ret = clone $this;
+        $ret->headers[$ci_name] = array_merge($ret->headers[$ci_name] ?? [], is_string($value) ? [$value] : $value);
+        return $ret;
     }
 
     public function withHeader(string $name, $value): MessageInterface
     {
-        $val_arr = is_string($value) ? [$value] : $value;
-        return (new static())
-            ->initProtocolVersion($this->protocol_version)
-            ->initBody($this->body)
-            ->initHeaders(
-                new HeaderItem($name, ...$val_arr),
-                ...array_values($this->headers),    
-            );
+        $ret = clone $this;
+        $ret->headers[strtolower($name)] = is_string($value) ? [$value] : $value;
+        return $ret;
     }
 
     public function withoutHeader(string $name): MessageInterface
     {
-        $new_headers = $this->headers;
-        unset($new_headers[strtolower($name)]);
-        return (new static())
-            ->initProtocolVersion($this->protocol_version)
-            ->initBody($this->body)
-            ->initHeaders(...$new_headers);
+        $ret = clone $this;
+        unset($ret->headers[strtolower($name)]);
+        return $ret;
     }
 
     public function getBody(): StreamInterface
@@ -87,44 +74,13 @@ class Message implements MessageInterface
 
     public function withBody(StreamInterface $body): MessageInterface
     {
-        return (new static())
-            ->initProtocolVersion($this->protocol_version)
-            ->initBody($body)
-            ->initHeaders(...$this->headers);
+        $ret = clone $this;
+        $ret->body = $body;
+        return $ret;
     }
 
-    protected function &initMessage(self $from): static
-    {
-        return $this
-            ->initProtocolVersion($from->protocol_version)
-            ->initHeaders(...$from->headers)
-            ->initBody($from->body);
-    }
+    protected string $protocol_version;
+    protected StreamInterface $body;
 
-    protected function &initProtocolVersion(string $version): static
-    {
-        $this->protocol_version = $version;
-        return $this;
-    }
-
-    protected function &initBody(StreamInterface $body): static
-    {
-        $this->body = $body;
-        return $this;
-    }
-
-    protected function &initHeaders(HeaderItem ...$header_items): static
-    {
-        $hi = [];
-        foreach ($header_items as $i) {
-            $hi[strtolower($i->name)] = $i;
-        }
-        $this->headers = $hi;
-        return $this;
-    }
-
-    protected readonly string $protocol_version;
-    protected readonly StreamInterface $body;
-
-    protected readonly array $headers;
+    protected array $headers;
 }

@@ -1,10 +1,24 @@
 <?php
 namespace SeaDrip\Http;
 
-use Psr\Http\Message\{RequestInterface, UriInterface};
+use Psr\Http\Message\{RequestInterface, StreamInterface, UriInterface};
 
 class Request extends Message implements \Psr\Http\Message\RequestInterface
 {
+    public function __construct(
+        string $protocolVersion,
+        StreamInterface $body,
+        array $headers,
+        string $method,
+        UriInterface $uri,
+        string $requestTarget,
+    ) {
+        parent::__construct($protocolVersion, $body, $headers);
+        $this->method = $method;
+        $this->uri = $uri;
+        $this->request_target = $requestTarget;
+    }
+
     public function getMethod(): string
     {
         return $this->method;
@@ -14,20 +28,16 @@ class Request extends Message implements \Psr\Http\Message\RequestInterface
     {
         $checked_method = Method::tryFrom($method);
         $checked_method or throw new \InvalidArgumentException('unknown http method '.$method);
-        return (new static())
-            ->initMessage($this)
-            ->initMethod($checked_method->value)
-            ->initRequestTarget($this->request_target)
-            ->initURI($this->uri);
+        $ret = clone $this;
+        $ret->method = $method;
+        return $ret;
     }
 
     public function withRequestTarget(string $requestTarget): RequestInterface
     {
-        return (new static())
-            ->initMessage($this)
-            ->initRequestTarget($requestTarget)
-            ->initMethod($this->method)
-            ->initURI($this->uri);
+        $ret = clone $this;
+        $ret->request_target = $requestTarget;
+        return $ret;
     }
 
     public function getRequestTarget(): string
@@ -55,11 +65,9 @@ class Request extends Message implements \Psr\Http\Message\RequestInterface
          * 一个新的修改过的 HTTP 请求实例。
          */
 
-        return (new static())
-            ->initMessage($this)
-            ->initMethod($this->method)
-            ->initRequestTarget($this->request_target)
-            ->initURI($uri);
+        $ret = clone $this;
+        $ret->uri = $uri;
+        return $ret;
     }
 
     public function getUri(): UriInterface
@@ -67,33 +75,7 @@ class Request extends Message implements \Psr\Http\Message\RequestInterface
         return $this->uri;
     }
 
-    protected function &initRequest(self $from): static
-    {
-        return $this->initMessage($this)
-            ->initMethod($from->method)
-            ->initURI($from->uri)
-            ->initRequestTarget($from->request_target);
-    }
-
-    protected function &initMethod(string $method): static
-    {
-        $this->method = $method;
-        return $this;
-    }
-
-    protected function &initURI(UriInterface $uri): static
-    {
-        $this->uri = $uri;
-        return $this;
-    }
-
-    protected function &initRequestTarget(string $requestTarget): static
-    {
-        $this->request_target = $requestTarget;
-        return $this;
-    }
-
-    protected readonly string $method;
-    protected readonly UriInterface $uri;
-    protected readonly string $request_target;
+    protected string $method;
+    protected UriInterface $uri;
+    protected string $request_target;
 }
