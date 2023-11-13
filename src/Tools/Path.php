@@ -37,9 +37,9 @@ class Path implements \Stringable
         return new self(...[$this, ...$parts]);
     }
 
-    public function create(): string
+    public function create(): bool
     {
-        return mkdir($this->path, 0755, true);
+        return $this->exists() or mkdir($this->path, 0755, true);
     }
 
     public readonly string $path;
