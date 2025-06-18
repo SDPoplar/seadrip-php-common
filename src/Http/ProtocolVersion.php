@@ -9,8 +9,7 @@ namespace SeaDrip\Http;
  *      MUST contain only the HTTP version number (e.g., "1.1", "1.0")
  * so this why we defined enum ProtocolVersion when we already have enum Protocal
  * 
- * Psr-7:
- * @link https://www.php-fig.org/psr/psr-7/
+ * @link Psr-7 https://www.php-fig.org/psr/psr-7/
  */
 enum ProtocolVersion: string
 {
