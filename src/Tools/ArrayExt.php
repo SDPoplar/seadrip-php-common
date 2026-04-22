@@ -32,6 +32,7 @@ abstract class ArrayExt
                 'array' => self::itemToStringRecursive($val, $tabSpace + 4),
                 'string' => "'{$val}'",
                 //  TODO: other types, e.g. object/class
+                'object' => throw new \Exception('only simple array supported'),
                 default => $val
             };
             $lines[] = "{$prefix_space}'{$key}' => {$val_str},";
